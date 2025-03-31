@@ -34,7 +34,7 @@ const createContact = async (req, res) => {
 
 const updateContact = async (req, res) => {
   const { id } = req.params;
-  const data = await contactsService.updateContact(id, req.body);
+  const data = await contactsService.updateContactById(id, req.body);
 
   if (!data) {
     throw HttpError(404);
