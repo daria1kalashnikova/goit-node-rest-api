@@ -1,10 +1,13 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { generateToken } from "../helpers/jwt.js";
 import User from "../db/models/User.js";
 
 import HttpError from "../helpers/HttpError.js";
 
-const { JWT_SECRET } = process.env;
+export const findUser = (query) =>
+  User.findOne({
+    where: query,
+  });
 
 export const registerUser = async (data) => {
   const { email, password } = data;
@@ -40,9 +43,24 @@ export const logInUser = async (data) => {
     throw HttpError(401, "Email or password is wrong");
   }
 
-  const token = jwt.sign({ email }, JWT_SECRET, {
-    expiresIn: "24h",
-  });
+  const payload = {
+    email,
+  };
+
+  const token = generateToken(payload);
+  await user.update({ token });
+  return {
+    token,
+  };
+};
+
+export const logOutUser = async (id) => {
+  const user = await findUser({ id });
+  console.log(user);
+  if (!user || !user.token) {
+    throw HttpError(404, "User not found");
+  }
+  await user.update({ token: null });
   return {
     token,
   };

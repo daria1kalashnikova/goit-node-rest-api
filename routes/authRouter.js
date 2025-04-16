@@ -1,5 +1,7 @@
 import express from "express";
 
+import authenticate from "../middlewares/authenticate.js";
+
 import authControllers from "../controllers/authControllers.js";
 
 import validateBody from "../helpers/validateBody.js";
@@ -19,5 +21,9 @@ authRouter.post(
   validateBody(authLogInSchema),
   authControllers.logInController
 );
+
+authRouter.get("/current", authenticate, authControllers.getCurrentController);
+
+authRouter.post("/logout", authenticate, authControllers.logOutController);
 
 export default authRouter;

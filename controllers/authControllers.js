@@ -18,7 +18,22 @@ const logInController = async (req, res) => {
   });
 };
 
+const getCurrentController = (req, res) => {
+  const { email, subscription } = req.user;
+
+  res.json({ email, subscription });
+};
+
+const logOutController = async (req, res) => {
+  const { id } = req.user;
+  await authServices.logOutUser(id);
+
+  res.status(204);
+};
+
 export default {
   registerController: ctrlWrapper(registerController),
   logInController: ctrlWrapper(logInController),
+  getCurrentController: ctrlWrapper(getCurrentController),
+  logOutController: ctrlWrapper(logOutController),
 };
