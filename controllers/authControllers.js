@@ -6,7 +6,7 @@ const registerController = async (req, res) => {
   res.status(201).json({
     user: {
       email: newUser.email,
-      subscription: "starter",
+      subscription: newUser.subscription,
     },
   });
 };
@@ -15,6 +15,10 @@ const logInController = async (req, res) => {
   const { token } = await authServices.logInUser(req.body);
   res.json({
     token,
+    user: {
+      email: newUser.email,
+      subscription: newUser.subscription,
+    },
   });
 };
 
