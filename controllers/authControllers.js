@@ -13,11 +13,12 @@ const registerController = async (req, res) => {
 
 const logInController = async (req, res) => {
   const { token } = await authServices.logInUser(req.body);
+  const user = await authServices.findUser({ email: req.body.email });
   res.json({
     token,
     user: {
-      email: newUser.email,
-      subscription: newUser.subscription,
+      email: user.email,
+      subscription: user.subscription,
     },
   });
 };
@@ -32,7 +33,7 @@ const logOutController = async (req, res) => {
   const { id } = req.user;
   await authServices.logOutUser(id);
 
-  res.status(204);
+  res.status(204).end();
 };
 
 export default {

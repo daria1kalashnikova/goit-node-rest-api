@@ -49,6 +49,7 @@ export const logInUser = async (data) => {
 
   const token = generateToken(payload);
   await user.update({ token });
+
   return {
     token,
   };
@@ -56,12 +57,8 @@ export const logInUser = async (data) => {
 
 export const logOutUser = async (id) => {
   const user = await findUser({ id });
-  console.log(user);
   if (!user || !user.token) {
-    throw HttpError(404, "User not found");
+    throw HttpError(401, "Not authorized");
   }
   await user.update({ token: null });
-  return {
-    token,
-  };
 };
