@@ -40,12 +40,16 @@ export const updateContact = async (query, data) => {
   return updatedContact;
 };
 
-export const updateStatusContact = async (contactId, body) => {
+export const updateStatusContact = async (query, body) => {
   if (!body || typeof body.favorite !== "boolean") {
     return null;
   }
-  const updatedContact = await updateContact(contactId, {
-    favorite: body.favorite,
-  });
+  const contact = await getContact(query);
+  if (!contact) return null;
+
+  const updatedContact = await contact.update(
+    { favorite: body.favorite },
+    { returning: true }
+  );
   return updatedContact;
 };
