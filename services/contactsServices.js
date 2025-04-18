@@ -1,7 +1,9 @@
 import User from "../db/models/Contact.js";
 
-export const listContacts = async () => {
-  const contacts = await User.findAll();
+export const listContacts = async (query) => {
+  const contacts = await User.findAll({
+    where: query,
+  });
   return contacts;
 };
 
@@ -10,8 +12,15 @@ export const getContactById = async (contactId) => {
   return contact;
 };
 
-export const removeContact = async (contactId) => {
-  const contact = await User.findByPk(contactId);
+export const getContact = async (query) => {
+  const contact = await User.findOne({
+    where: query,
+  });
+  return contact;
+};
+
+export const removeContact = async (query) => {
+  const contact = await getContact(query);
   if (!contact) {
     return null;
   }
@@ -24,19 +33,23 @@ export const addContact = async (data) => {
   return contact;
 };
 
-export const updateContact = async (contactId, data) => {
-  const contact = await getContactById(contactId);
+export const updateContact = async (query, data) => {
+  const contact = await getContact(query);
   if (!contact) return null;
   const updatedContact = await contact.update(data, { returning: true });
   return updatedContact;
 };
 
-export const updateStatusContact = async (contactId, body) => {
+export const updateStatusContact = async (query, body) => {
   if (!body || typeof body.favorite !== "boolean") {
     return null;
   }
-  const updatedContact = await updateContact(contactId, {
-    favorite: body.favorite,
-  });
+  const contact = await getContact(query);
+  if (!contact) return null;
+
+  const updatedContact = await contact.update(
+    { favorite: body.favorite },
+    { returning: true }
+  );
   return updatedContact;
 };
