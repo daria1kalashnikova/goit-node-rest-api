@@ -4,6 +4,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import * as authServices from "../services/authServices.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
+import HttpError from "../helpers/HttpError.js";
 
 const avatarsDir = path.resolve("public", "avatars");
 
@@ -64,8 +65,8 @@ const logOutController = async (req, res) => {
 const updateAvatarController = async (req, res) => {
   const { id } = req.user;
 
-  if (!req.file) {
-    throw HttpError(400, "Avatar file is required");
+  if (!id || !req.file) {
+    throw HttpError(401, "Not authorized");
   }
 
   const { path: oldPath, filename } = req.file;
@@ -84,7 +85,7 @@ const updateAvatarController = async (req, res) => {
       avatarURL: fullAvatarURL,
     });
   } catch (error) {
-    await fs.unlink(oldPath).catch(() => {});
+    await fs.unlink(newPath).catch(() => {});
     throw error;
   }
 };
