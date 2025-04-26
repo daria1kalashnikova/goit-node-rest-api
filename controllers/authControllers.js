@@ -85,7 +85,7 @@ const updateAvatarController = async (req, res) => {
       avatarURL: fullAvatarURL,
     });
   } catch (error) {
-    await fs.unlink(newPath).catch(() => {});
+    await fs.unlink(oldPath).catch(() => {});
     throw error;
   }
 };
