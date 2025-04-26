@@ -1,6 +1,7 @@
 import express from "express";
 
 import authenticate from "../middlewares/authenticate.js";
+import upload from "../middlewares/upload.js";
 
 import authControllers from "../controllers/authControllers.js";
 
@@ -20,6 +21,13 @@ authRouter.post(
   "/login",
   validateBody(authLogInSchema),
   authControllers.logInController
+);
+
+authRouter.patch(
+  "/avatars",
+  authenticate,
+  upload.single("avatarURL"),
+  authControllers.updateAvatarController
 );
 
 authRouter.get("/current", authenticate, authControllers.getCurrentController);
