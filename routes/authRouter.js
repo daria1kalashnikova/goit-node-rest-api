@@ -7,7 +7,11 @@ import authControllers from "../controllers/authControllers.js";
 
 import validateBody from "../helpers/validateBody.js";
 
-import { authRegisterSchema, authLogInSchema } from "../schemas/authSchema.js";
+import {
+  authRegisterSchema,
+  authLogInSchema,
+  authVerifyEmailSchema,
+} from "../schemas/authSchema.js";
 
 const authRouter = express.Router();
 
@@ -15,6 +19,14 @@ authRouter.post(
   "/register",
   validateBody(authRegisterSchema),
   authControllers.registerController
+);
+
+authRouter.get("/verify/:verificationToken", authControllers.verifyController);
+
+authRouter.post(
+  "/verify",
+  validateBody(authVerifyEmailSchema),
+  authControllers.resendVerifyEmailController
 );
 
 authRouter.post(
